@@ -13,12 +13,13 @@ namespace API.Data
                 return;
             }
 
-            var products = new List<Product>{
+            List<Product> products = new()
+            {
             new Product {
                 Name = "shampoo",
                     Brand = "Head and Shoulders",
                     Price = 300,
-                    PictureUrl = "shampoo.get.com",
+                    PictureUrl = "https://i.imgur.com/TLKVqLt.jpeg",
                     Inventory = 100,
                     Description = "Anti dandruff shampoo",
                     Type = "Cosmetics"
@@ -27,17 +28,17 @@ namespace API.Data
                 Name = "Shoes",
                     Brand = "Nike",
                     Price = 3000,
-                    PictureUrl = "Nike.get.com",
+                    PictureUrl = "https://i.imgur.com/TLKVqLt.jpeg",
                     Inventory = 150,
                     Description = "Sneakers",
                     Type = "Apparel"
             }
         };
-        foreach (var  product in products)
-        {
-            context.Products.Add(product);
-        }
-        context.SaveChanges();
+            foreach (Product product in products)
+            {
+                _ = context.Products.Add(product);
+            }
+            _ = context.SaveChanges();
         }
     }
 }

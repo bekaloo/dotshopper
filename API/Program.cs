@@ -25,7 +25,7 @@ namespace API
             {
                 logger.LogError(ex, "Problem Migrating Data");
             }
-           
+            // Timer timer1 = new Timer(_ => Console.WriteLine("Hello World"), null, 0, 2000);
             host.Run();
         }
 
