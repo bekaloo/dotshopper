@@ -6,13 +6,12 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class ApiController : ControllerBase
+
+    public class ProductsController : BaseApiController
     {
 
         private readonly StoreContext context;
-        public ApiController(StoreContext context)
+        public ProductsController(StoreContext context)
         {
             this.context = context;
 
