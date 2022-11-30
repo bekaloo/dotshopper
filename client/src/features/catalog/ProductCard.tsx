@@ -1,10 +1,23 @@
 import { Avatar, Button, Card, CardActions, CardContent, CardMedia, Typography, CardHeader } from '@mui/material'
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import agent from '../../app/api/agent';
 import { Product } from '../../app/models/product';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useStoreContext } from '../../app/context/StoreContext';
 interface Props {
     product: Product
 }
 const ProductCard = ({ product }: Props) => {
+    const [loading, setLoading] = useState(false);
+    const {setBasket} = useStoreContext();
+    const handleAddItem = (productId: number)=>{
+        setLoading(true);
+        agent.Basket.addItem(productId)
+        .then(basket=>setBasket(basket))
+        .catch(error=>console.log(error))
+        .finally(()=> setLoading(false));
+    }
     return (
         <Card>
             <CardHeader
@@ -34,19 +47,10 @@ const ProductCard = ({ product }: Props) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small">Add to cart</Button>
+                <LoadingButton loading={loading} size="small" onClick={()=>handleAddItem(product.id)} >Add to cart</LoadingButton>
                 <Button component={Link} to={`/catalog/${product.id}`} size="small">View</Button>
             </CardActions>
         </Card>
-        // <List>
-        //         <ListItem >
-        //             <ListItemAvatar>
-        //                 <Avatar src={product.pictureUrl} />
-        //             </ListItemAvatar>
-        //             <ListItemText>{product.name} -- {product.price}</ListItemText>
-        //         </ListItem>
-
-        // </List>
     )
 }
 

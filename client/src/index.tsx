@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './app/layout/styles.css';
 import App from './app/layout/App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter, Router } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import {createBrowserHistory} from 'history'
+import { StoreProvider } from './app/context/StoreContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -16,12 +17,13 @@ const [pathState, setPathState] = useState({
 action: history.action,
 location: history.location
 })
-const [state, setState] = useState({})
-useLayoutEffect(()=>history.listen(setPathState,))
+useLayoutEffect(()=>history.listen(setPathState,),[])
   return (
     <Router
-    navigator={history}  navigationType={pathState.action} location={pathState.location} >        
-  <App />
+    navigator={history}  navigationType={pathState.action} location={pathState.location} > 
+    <StoreProvider>
+       <App />
+      </StoreProvider>       
   </Router>
   )
 }
