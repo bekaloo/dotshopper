@@ -1,37 +1,18 @@
 import { Add, Delete, Remove } from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import agent from "../../app/api/agent";
-import { useStoreContext } from "../../app/context/StoreContext"
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { addBasketItemAsync, removeBasketItemAsync } from "./basketSlice";
 import { BasketSummary } from "./BasketSummary";
 
 export const BasketPage = () => {
 
-    const { basket, setBasket, removeItem } = useStoreContext();
-    const [status, setStatus] = useState({ loading: false, name: '' });
-    const handleAdd = (productId: number, name: string) => {
-        setStatus({ loading: true, name });
+    const { basket,status, remove } = useAppSelector(state => state.basket);
+    const dispatch = useAppDispatch()
+    
 
-        agent.Basket.addItem(productId)
-            .then(basket => setBasket(basket))
-            .catch(error => console.log(error))
-            .finally(() => {
-                setStatus({ loading: false, name: '' });
-              
-            })
-
-    }
-    const handleRemove = (productId: number, quantity: number, name: string) => {
-        setStatus({ loading: true, name })
-        agent.Basket.removeItem(productId, quantity)
-            .then(() => removeItem(productId, quantity))
-            .catch(error => console.log(error))
-            .finally(() => setStatus({ loading: false, name: '' }))
-    }
-
-
+        
     if (!basket) return <Typography variant="h3">Your Basket Is Empty</Typography>
     return (
         <>
@@ -60,25 +41,26 @@ export const BasketPage = () => {
                             </TableCell>
                             <TableCell align="center">
                                 <LoadingButton
-                                    loading={status.loading && status.name === "rem" + item.name}
-                                    onClick={() => handleRemove(item.productId, 1, "rem" + item.name)} >
+                                    loading={status === "pendingRemoval" + item.productId}
+                                    onClick={() => dispatch(removeBasketItemAsync({productId: item.productId}))} >
                                     <Remove />
                                 </LoadingButton>
                                 {item.quantity}
                                 <LoadingButton
-                                    loading={status.loading && status.name === "add" + item.name}
-                                    onClick={() => handleAdd(item.productId, "add" + item.name)} >
+                                    loading={status === "pendingAdd" + item.productId}
+                                    onClick={() => dispatch(addBasketItemAsync({productId: item.productId}))} >
                                     <Add />
                                 </LoadingButton>
                             </TableCell>
                             <TableCell align="center">${item.price}</TableCell>
                             <TableCell align="center">${item.price * item.quantity}</TableCell>
                             <TableCell align="center">
-                                <IconButton
-                                    onClick={() => handleRemove(item.productId, item.quantity, "del")}
+                                <LoadingButton
+                                    loading={remove === "Delete" + item.productId}
+                                    onClick={() => dispatch(removeBasketItemAsync({productId: item.productId, quantity: item.quantity}))}
                                     color="error" >
                                     <Delete />
-                                </IconButton>
+                                </LoadingButton>
                             </TableCell>
                         </TableRow>
                     ))}

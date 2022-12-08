@@ -39,7 +39,7 @@ namespace API.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return BadRequest(new ProblemDetails { Title = "Product Not Found" });
             }
 
             basket.AddItem(product, quantity);
@@ -66,7 +66,7 @@ namespace API.Controllers
 
             basket.RemoveItem(productId, quantity);
             bool result = await _context.SaveChangesAsync() > 0;
-            return result ? Ok() : BadRequest(error: new ProblemDetails { Title = "There was an error processing request" });
+            return result ? Ok() : BadRequest(error: new ProblemDetails { Title = "Problem removing item from the basket" });
         }
 
 
